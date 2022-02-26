@@ -1,3 +1,15 @@
+:root {
+  --background-color: #181818;
+  --primary-text-color: white;
+  --secondary-text-color: rgb(187, 187, 187);
+  --highlighted-text-color: rgb(41, 224, 155);
+  --primary-button-color: rgb(40, 167, 115);
+  --secondary-button-color: rgb(40, 40, 40);
+  --button-text-shadow: rgba(38, 111, 78, 0.5) 0px 0px 4px;
+  --br-project-image: 10px;
+  --transparent-background: rgba(40, 40, 40, 0.8);
+}
+
 .App {
   text-align: center;
 }
@@ -28,11 +40,95 @@
   color: #61dafb;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: min(100%, 15rem);
+}
+
+form label {
+  display: block;
+  font-size: 3rem;
+}
+
+form input {
+  font-size: 2rem;
+  text-align: center;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
+
+form input.success[disabled] {
+  background-color: lawngreen;
+  -webkit-text-fill-color: black;
+  opacity: 1;
+}
+
+form input.failure[disabled] {
+  background-color: #f30000;
+  color: white !important;
+  -webkit-text-fill-color: white;
+  opacity: 1; /* required on iOS */
+}
+
+form label {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+
+button {
+  padding: 0.5em 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+.primary-button {
+  color: var(--primary-text-color);
+  background-color: var(--primary-button-color);
+  box-shadow: var(--button-text-shadow);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+.progressbar {
+  width: 100%;
+  margin: 25px auto;
+  border: solid 1px #000;
+}
+.progressbar .inner {
+  height: 15px;
+  animation: progressbar-countdown;
+  /* Placeholder, this will be updated using javascript */
+  animation-duration: 40s;
+  /* We stop in the end */
+  animation-iteration-count: 1;
+  /* Stay on pause when the animation is finished finished */
+  animation-fill-mode: forwards;
+  /* We start paused, we start the animation using javascript */
+  animation-play-state: paused;
+  /* We want a linear animation, ease-out is standard */
+  animation-timing-function: linear;
+}
+@keyframes progressbar-countdown {
+  0% {
+    width: 100%;
+    background: #0F0;
+  }
+  100% {
+    width: 0%;
+    background: #F00;
   }
 }

@@ -18,7 +18,7 @@ export const shuffle = (a) => {
 
 const maxMillisecondsToSolve = 5000;
 
-const getInitialTasks = () => {
+const getInitialTasks = (max = 10) => {
   const tasks = [];
   for (let i = 1; i <= 10; i++) {
     for (let j = 1; j <= 10; j++) {
@@ -32,7 +32,7 @@ const getInitialTasks = () => {
     }
   }
   shuffle(tasks);
-  return tasks;
+  return tasks.slice(0, max);
 }
 
 function createProgressbar(id, duration, callback, run = true) {
@@ -72,13 +72,12 @@ const removeProgressBar = () => {
 
 function App() {
 
-  const [tasks, setTasks] = useState(getInitialTasks().slice(0, 10));
+  const [tasks, setTasks] = useState(getInitialTasks());
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [mode, setMode] = useState("getready");
   const [startTime, setStartTime] = useState(moment())
   const currentTask = tasks[currentTaskIndex];
   const correctAnswer = currentTask.firstNum * currentTask.secondNum;
-  const operator = "x"
 
   const getInputField = () => {
     return document.querySelector("#answer-input-field");
@@ -103,9 +102,14 @@ function App() {
     inputField.focus();
   }
 
+  function getResult() {
+    const successfulTasks = tasks.reduce((acc, task) => !task.failed ? acc + 1 : acc, 0);
+    const totalTasks = tasks.length;
+    return {successfulTasks, totalTasks}
+  }
+
   useEffect(() => {
-    focusInputField();
-    createProgressbar("progress-bar-container", "5s", handleTimeExceeded, false)
+
   }, [])
 
   useEffect(() => {
@@ -123,14 +127,16 @@ function App() {
       focusInputField()
     } else if (mode === "finished") {
       removeProgressBar();
-      const successfulTasks = tasks.reduce((acc, task) => !task.failed ? acc + 1 : acc, 0);
-      const totalTasks = tasks.length;
-      document.querySelector("#answer-input-field-label").innerHTML = `Test run over! <br/> ${successfulTasks}/${totalTasks}`
+    } else if (mode === "getready") {
+      focusInputField();
+      createProgressbar("progress-bar-container", "5s", handleTimeExceeded, false)
+      setTasks(getInitialTasks())
+      setCurrentTaskIndex(0);
     }
   }, [mode])
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const restart = () => {
+    setMode("getready")
   }
 
   const handleTimeExceeded = () => {
@@ -152,9 +158,9 @@ function App() {
     }
     setMode("showresult");
     const finishTime = moment();
-    console.log({finishTime});
-    console.log({startTime});
-    console.log(finishTime.diff(startTime, "seconds", true));
+    // console.log({finishTime});
+    // console.log({startTime});
+    // console.log(finishTime.diff(startTime, "seconds", true));
   }
 
   const handleInputChange = (e) => {
@@ -176,22 +182,33 @@ function App() {
   return (
     <div className="App">
       <div className="App-header">
-        <form onSubmit={handleSubmit}>
-          <label id="answer-input-field-label" htmlFor={"answer-input-field"}>
-            <span>{currentTask.firstNum}</span>
-            <span> &sdot; </span>
-            <span>{currentTask.secondNum}</span>
-          </label>
-          {(mode === "play" || mode === "showresult" || mode === "getready") && <input
+        <form autoComplete={"off"}>
+          {mode !== "finished" ? (<>
+            <label id="answer-input-field-label" htmlFor={"answer-input-field"}>
+              <span>{currentTask.firstNum}</span>
+              <span> &sdot; </span>
+              <span>{currentTask.secondNum}</span>
+            </label>
+            <input
               name={"answer"}
               id={"answer-input-field"}
               type={"tel"}
               onChange={handleInputChange}
               placeholder={mode === "getready" ? "Solve to start": ""}
               disabled={mode === "showresult"}
-          />}
-          <div id={"progress-bar-container"}></div>
-          {/*{mode === "getready" && <button onClick={handleStartButtonClicked} className={"primary-button"}>Start</button>}*/}
+            />
+            <div id={"progress-bar-container"}></div>
+          </>) : (
+              <>
+                <div className={"result"}>{`Test completed!`} <br/> {`${getResult().successfulTasks}/${getResult().totalTasks}`}</div>
+                <button
+                    onClick={restart}
+                    className={"primary-button"}>
+                  Restart
+                </button>
+              </>
+              )
+          }
         </form>
       </div>
     </div>

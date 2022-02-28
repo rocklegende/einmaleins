@@ -88,6 +88,11 @@ button {
   font-size: 1.5rem;
 }
 
+.result {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
 .primary-button {
   color: var(--primary-text-color);
   background-color: var(--primary-button-color);

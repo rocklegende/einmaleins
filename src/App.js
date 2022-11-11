@@ -186,7 +186,7 @@ function App() {
           {mode !== "finished" ? (<>
             <label id="answer-input-field-label" htmlFor={"answer-input-field"}>
               <span>{currentTask.firstNum}</span>
-              <span> &sdot; </span>
+              <span> x </span>
               <span>{currentTask.secondNum}</span>
             </label>
             <input
